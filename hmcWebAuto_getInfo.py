@@ -5,6 +5,7 @@ import sys
 import pyautogui
 import pyperclip
 import re
+from xpath import *
 from PIL.ImageOps import grayscale
 from datetime import datetime
 from selenium import webdriver
@@ -16,39 +17,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from openpyxl import load_workbook         #엑셀파일 불러오기
 from openpyxl.drawing.image import Image   #엑셀 이미지 삽입
 from selenium.webdriver.support.select import Select
-
-
-hmc_xpath1 = '//*[@id="app"]/div/section/div[2]/ul[2]/li/button'                              # 신규설계 버튼
-hmc_xpath1_1 = '//*[@id="app"]/div/section/div[2]/ul[1]'                                      # 가입가능 상품 리스트
-hmc_xpath2_0 =   '//*[@id="app"]/div/section/div[2]/div[2]/div/ul'                            # 상품군 선택
-hmc_xpath2_4 = '//*[@id="container"]/div[1]/section/div[2]/div[1]/div/p/button'               # 보험종류변경
-hmc_xpath2_5_0 = '//*[@id="container"]/div[2]/div[2]/div/ul/li'                               # 셀렉트박스
-hmc_xpath2_6 = '//*[@id="container"]/div[2]/div[2]/footer/button'                             # 적용
-hmc_xpath2_7 = '//*[@id="info-21"]/label'                                                     # 건강체 체크 박스
-hmc_xpath2_8 = '//*[@id="container"]/div[3]/div[2]/div/ul/li'                                 # 플랜선택
-hmc_xpath2_9 = '//*[@id="container"]/div[3]/div[2]/div/div/button/span'                       # 직접설계
-hmc_xpath3 = '//*[@id="container"]/div[1]/footer/div/button'                                  # 다음 버튼
-hmc_xpath4 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/h2'                    # 주계약
-hmc_xpath5 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[1]/div/input'      # 주계약 가입금액
-hmc_xpath5_1 = '//*[@id="container"]/div[5]/div[2]/div/div/button'                            # 특약전체선택
-hmc_xpath5_1_1 = '//*[@id="container"]/div[4]/div[2]/div/div/button'                          # 연금특약전체선택
-hmc_xpath5_2 = '//*[@id="container"]/div[5]/div[2]/div/footer/button'                         # 특약전체추가
-hmc_xpath5_2_1 = '//*[@id="container"]/div[4]/div[2]/div/footer/button'                       # 연금특약전체추가
-hmc_xpath5_3 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[2]/select'# 납입기간
-hmc_xpath5_4 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/ul/li[1]/label'      # 가입금액
-hmc_xpath5_5 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/ul/li[2]/label'      # 합계보험료
-hmc_xpath5_5_1 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[1]/div/input'  # #연금 통합형 보험료(거치)
-hmc_xpath5_5_2 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div/input'  # #연금 통합형 보험료(적립)
-hmc_xpath5_6 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[1]/select'# 보험기간
-hmc_xpath5_7   = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[3]/select'# 납입주기
-hmc_xpath5_7_1 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[5]/select'# 납입주기
-hmc_xpath5_7_2 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[6]/select'# 납입주기
-hmc_xpath5_7_3 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div[2]/div[2]/div[7]/select'# 납입주기
-hmc_xpath5_8 = '//*[@id="container"]/div[1]/section/div[2]/div[3]/ul/li/label'                # 환급특약제외, 연금납입면제특약제외
-hmc_xpath6 = '//*[@id="container"]/div[1]/footer/div/button[2]'                               # 상세결과보기
-hmc_xpath7 = '//*[@id="container"]/div[1]/section/div[2]/div[2]/div/div[2]/div/dl[1]/dd[1]'   # 계약자명
-hmc_xpath8 = '/html/body/div[2]/div[1]/footer/div/button'                                     # 설계저장
-hmc_xpath9 = '/html/body/div[2]/div/section/section/footer/div[1]/button'                     # 상품설명서 미리보기
 
 ###########################################
 # select 옵션 선택
@@ -152,6 +120,7 @@ for y in range(2,ws.max_column + 1):
             print("보험종류 변경없음")
         time.sleep(0.5)         
 
+        
         elems1 = browser.find_elements_by_class_name("insureSelect") #class_name "insureSelect"(보험종류)을 가지는 모든 엘리먼트 가져오기
         count=0
         countDetail = []
