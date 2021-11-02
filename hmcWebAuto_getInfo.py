@@ -17,13 +17,7 @@ from openpyxl import load_workbook         #엑셀파일 불러오기
 from openpyxl.drawing.image import Image   #엑셀 이미지 삽입
 from selenium.webdriver.support.select import Select
 
-###########################################
-# 변수 (엘리먼트) - element class 로 구현하여 사용하는 것이 소스 코드 상으로 관리가 편합니다.
-# '''
-# class hmcWebElement:
-#     hmc_xpath1 = 
-# '''
-###########################################
+
 hmc_xpath1 = '//*[@id="app"]/div/section/div[2]/ul[2]/li/button'                              # 신규설계 버튼
 hmc_xpath1_1 = '//*[@id="app"]/div/section/div[2]/ul[1]'                                      # 가입가능 상품 리스트
 hmc_xpath2_0 =   '//*[@id="app"]/div/section/div[2]/div[2]/div/ul'                            # 상품군 선택
@@ -158,7 +152,6 @@ for y in range(2,ws.max_column + 1):
             print("보험종류 변경없음")
         time.sleep(0.5)         
 
-        
         elems1 = browser.find_elements_by_class_name("insureSelect") #class_name "insureSelect"(보험종류)을 가지는 모든 엘리먼트 가져오기
         count=0
         countDetail = []
