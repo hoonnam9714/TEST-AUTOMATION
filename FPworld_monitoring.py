@@ -38,6 +38,24 @@ def menuChoice(arg1, arg2): #arg1:대분류, arg2:소분류
     time.sleep(0.5)
 
 ###############################
+# 카카오톡 전송
+###############################
+def kakaoSend():
+    browser.quit() #브라우저 종료
+    time.sleep(0.5)
+    pyautogui.moveTo(30,457) #카카오톡 메시지 박스
+    time.sleep(0.5)
+    pyautogui.click()
+    time.sleep(0.5)
+    pyperclip.copy("FPworld 모니터링 실패_"+str(currentTime)) #클립보드에 복사
+    pyautogui.hotkey("command","v") #붙여넣기
+    time.sleep(0.5)
+    pyautogui.moveTo(346,482) #카카오톡 전송
+    time.sleep(0.5)
+    pyautogui.click()
+    time.sleep(0.5)
+
+###############################
 # 메인
 ###############################
 if __name__ == "__main__":
@@ -80,22 +98,10 @@ if __name__ == "__main__":
             currentTime = current_datetime.strftime(dateformat) #현재시간 ex)20211103153201
 
             ###############################
-            # 예외발생시 종료 및 알림톡 발송
+            # 예외발생시 종료 및 카카오톡 발송
             ###############################
             if failcount > 0: 
-                browser.quit() #브라우저 종료
-                time.sleep(0.5)
-                pyautogui.moveTo(30,457) #카카오톡 메시지 박스
-                time.sleep(0.5)
-                pyautogui.click()
-                time.sleep(0.5)
-                pyperclip.copy("FPworld 모니터링 실패_"+str(currentTime)) #클립보드에 복사
-                pyautogui.hotkey("command","v") #붙여넣기
-                time.sleep(0.5)
-                pyautogui.moveTo(346,482) #카카오톡 전송
-                time.sleep(0.5)
-                pyautogui.click()
-                time.sleep(0.5)
+                kakaoSend() #카카오톡 발송
                 break
             
             ###############################
