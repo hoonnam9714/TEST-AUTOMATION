@@ -61,8 +61,8 @@ while True:
         print("공휴일여부 : "+str(is_holidays(currentTime[0:8])))
         
         
-        # if (int('090000') < int(currentTime[8:14]) or int('90000') > int(currentTime[8:14])): #16시 이후거나 08시 이전이면 실행
-        if (int('180000') < int(currentTime[8:14]) or int('90000') > int(currentTime[8:14])) and int(currentTime[11:14]) == int('000'): #16시 이후거나 08시 이전이면 10분 단위로 실행
+        if (int('90000') < int(currentTime[8:14]) or int('90000') > int(currentTime[8:14])): #16시 이후거나 08시 이전이면 실행
+        # if (int('120000') < int(currentTime[8:14]) or int('90000') > int(currentTime[8:14])) and int(currentTime[11:14]) == int('500'): #16시 이후거나 08시 이전이면 10분 단위로 실행
         # if is_weekend(date(int(currentTime[0:4]),int(currentTime[4:6]),int(currentTime[6:8]))) and int(currentTime[11:12]) == int('0'): #토/일요일이면 10분 단위로 실행
         # if  is_holidays(currentTime[0:8]) and int(currentTime[11:12]) == int('0'): #공휴일이면 10분 단위로 실행
             options = webdriver.ChromeOptions()
@@ -193,14 +193,16 @@ while True:
         count = count + 1
         browser.quit() #브라우저 종료
         time.sleep(0.5)
-        pyautogui.moveTo(1544,654) #카카오톡 메시지 박스
+        # pyautogui.moveTo(1544,654) #카카오톡 메시지 박스 //1920 우측위
+        pyautogui.moveTo(33,644) #카카오톡 메시지 박스 //1280 좌측위
         time.sleep(0.5)
         pyautogui.click()
         time.sleep(0.5)
         pyperclip.copy("HMC 가입설계 실패_"+str(currentTime)) #클립보드에 복사
         pyautogui.hotkey("ctrl","v") #붙여넣기
         time.sleep(0.5)
-        pyautogui.moveTo(1880,650) #카카오톡 전송
+        # pyautogui.moveTo(1880,650) #카카오톡 전송 //1920 우측위
+        pyautogui.moveTo(393,644) #카카오톡 전송 //1280 좌측위
         time.sleep(0.5)
         pyautogui.click()
         time.sleep(0.5)

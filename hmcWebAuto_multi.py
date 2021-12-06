@@ -84,13 +84,62 @@ for x in range(2,ws.max_row + 1):
     # options.add_argument("disable-gpu")
     browser = webdriver.Chrome(options=options)
     
-    # browser = webdriver.Chrome() #웹드라이버 설정(크롬)
-    hmc_url = "https://devhmc.hanwhalife.com:1080/sfa/incomeHmc?etrDvCd=01&token=aa2cb27ab1d84482aced7b5ee21c798f&sfaCmpnDvsn=01&mobUserPrno="+str(ws.cell(row=x,column=2).value)+"&mobUserDvsn=02&offcCode=00000" #HMC QA 테스트 URL
+    # # browser = webdriver.Chrome() #웹드라이버 설정(크롬)
+    # hmc_url = "https://devhmc.hanwhalife.com:1080/sfa/incomeHmc?etrDvCd=01&token=aa2cb27ab1d84482aced7b5ee21c798f&sfaCmpnDvsn=01&mobUserPrno="+str(ws.cell(row=x,column=2).value)+"&mobUserDvsn=02&offcCode=00000" #HMC QA 테스트 URL
+    # # hmc_url = "https://stg.hanwhasfa.com/co/external/auth/proxy?url=https%3A%2F%2Fhmc.hanwhalife.com%3A1080%2Fsfa%2FincomeHmc%3FetrDvCd%3D01%26sfaCmpnDvsn%3D01%26mobUserPrno%3D2140046%26mobUserDvsn%3D01%26customNo%3D108322572%26prdDgnNo%3D"
+    # browser.get(hmc_url) #HMC QA 테스트 URL
+    # browser.maximize_window()
+    # browser.implicitly_wait(10)
+
+    hmc_url = "https://stg.hanwhasfa.com/co/loginTest" #HMC QA 테스트 URL
     browser.get(hmc_url) #HMC QA 테스트 URL
     browser.maximize_window()
     browser.implicitly_wait(10)
 
-    #테스트 케이스 col건수 만큼 반복 수행
+    browser.find_element_by_xpath("//*[@id='sabun01']").send_keys("2140046")
+    browser.find_element_by_xpath("//*[@id='passw01']").send_keys("01")
+    browser.find_element_by_xpath("//*[@id='name01']").send_keys("01")
+    browser.find_element_by_xpath("//*[@id='sfaCmpnDvsn']").send_keys("01")
+    browser.find_element_by_xpath("//*[@id='mobUserDvsn']").send_keys("01")
+    browser.find_element_by_xpath("//*[@id='passw01']").click()
+    browser.find_element_by_xpath("//*[@id='btn-login']").click()
+    time.sleep(1)
+
+    pyautogui.press('enter') #엔터키(팝업처리)
+    time.sleep(1)
+
+    hmc_url = "https://stg.hanwhasfa.com/at/cnvnplan/test" #HMC QA 테스트 URL
+    browser.get(hmc_url) #HMC QA 테스트 URL
+    browser.maximize_window()
+    browser.implicitly_wait(10)
+
+
+    browser.find_element_by_xpath("//*[@id='hmcUrl']").clear()
+    browser.find_element_by_xpath("//*[@id='hmcUrl']").send_keys("https://hmc.hanwhalife.com:1080")
+    browser.find_element_by_xpath("//*[@id='wrapper']/div/div/div[2]/section/div[1]/div[11]/div/div[1]/label").click()
+    browser.find_element_by_xpath("//*[@id='btn_openCallback']").click()
+    time.sleep(1)
+
+    pyautogui.press('enter') #엔터키(팝업처리)
+    time.sleep(1)
+
+    pyautogui.press('enter') #엔터키(팝업처리)
+    time.sleep(1)
+    browser.implicitly_wait(10)
+    time.sleep(2) 
+
+    browser.switch_to_window(browser.window_handles[1]) #탭 전환
+    time.sleep(1)
+    hmc_url = browser.current_url
+    time.sleep(0.5) 
+    browser.switch_to_window(browser.window_handles[0]) #탭 전환
+    time.sleep(0.5) 
+
+    browser.get(hmc_url) #HMC QA 테스트 URL
+    browser.maximize_window()
+    browser.implicitly_wait(10)
+
+    #테스트 케이스 col건수 만큼 반복 수행C:/Users/Administrator/Desktop/PythonWorkspace
     for y in range(2,ws.max_column + 1):
         if "고객명" in ws.cell(row=1,column=y).value: # 엑셀항목과 값 비교
             browser.implicitly_wait(10)

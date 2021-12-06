@@ -166,20 +166,23 @@ def make_excel():
         ##########################################
         #종피1,2,3 성별/직종 엑셀에 저장
         ##########################################
-        l=2
-        j=0
-        for l in range(2,5):
-            if birth[l]:  #종피1,2,3 생년월일이 존재하면
-                result = browser.execute_script("return document.querySelector('#man0"+str(l)+"').checked") #종피1,2,3 성별 가져오기
-                if result:
-                    ws.cell(row=i,column=13+j).value = "남" #종피1,2,3 성별
+        try:
+            l=2
+            j=0
+            for l in range(2,5):
+                if birth[l]:  #종피1,2,3 생년월일이 존재하면
+                    result = browser.execute_script("return document.querySelector('#man0"+str(l)+"').checked") #종피1,2,3 성별 가져오기
+                    if result:
+                        ws.cell(row=i,column=13+j).value = "남" #종피1,2,3 성별
+                    else:
+                        ws.cell(row=i,column=13+j).value = "여" #종피1,2,3 성별
                 else:
-                    ws.cell(row=i,column=13+j).value = "여" #종피1,2,3 성별
-            else:
-                ws.cell(row=i,column=13+j).value = "" #종피1,2,3 성별
-                ws.cell(row=i,column=14+j).value = "" #종피1,2,3 직종
-            l = l+1
-            j = j+3
+                    ws.cell(row=i,column=13+j).value = "" #종피1,2,3 성별
+                    ws.cell(row=i,column=14+j).value = "" #종피1,2,3 직종
+                l = l+1
+                j = j+3
+        except:
+            pass
 
         time.sleep(0.5)
         #######################################
