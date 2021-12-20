@@ -144,6 +144,7 @@ def mainSelect():
 # 보험종류 가져오기
 ###############################
 def getInsrKind():
+    browser.implicitly_wait(0.5)
     try:
         print("### 보험종류 가져오기 getInsrKind 시작 ###")
         for k in range(0,4):
@@ -160,8 +161,9 @@ def getInsrKind():
 # 계약자 구분 테이블 가져오기
 ###############################
 def getCtorTable():
+    print("### 계약자 구분 getCtorTable 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
-        print("### 계약자 구분 getCtorTable 시작 ###")
         elems = browser.find_elements(By.TAG_NAME, "nobr")
         for elem in elems:
             if str(elem.text):
@@ -175,15 +177,16 @@ def getCtorTable():
                     getCtorInfo(3,ctorInfoNo+15) # 계약자 정보 가져오기 함수 호출
                 elif '자녀2' == str(elem.text):
                     getCtorInfo(4,ctorInfoNo+20) # 계약자 정보 가져오기 함수 호출
-        print("### 계약자 구분 getCtorTable 종료 ###")
     except Exception as e:
         print("### 계약자 구분 getCtorTable 예외발생: " + str(e))
         pass
+    print("### 계약자 구분 getCtorTable 종료 ###")
     time.sleep(0.5)
 ###############################
 # 계약자정보 가져오기
 ###############################
 def getCtorInfo(arg1,arg2):
+    browser.implicitly_wait(0.5)
     try:
         print("### 계약자정보 getCtorInfo 시작 ###")
         # 이름
@@ -213,6 +216,7 @@ def getCtorInfo(arg1,arg2):
 # 기본설계 주계약 가져오기
 ###############################
 def getBasicMainPlan():
+    browser.implicitly_wait(0.5)
     try:
         print("### 기본설계 주계약 getBasicMainPlan 시작 ###")
         global currentCol
@@ -228,17 +232,18 @@ def getBasicMainPlan():
         ws.cell(row=i,column=basicMainPlanNo+4).value = elem.text.replace(",",'')
         elem = browser.find_element(By.XPATH ,'//*[@id="grdMain_cell_0_13"]/nobr') #증액보험기간
         ws.cell(row=i,column=basicMainPlanNo+5).value = elem.text.replace(",",'')
-        print("### 기본설계 주계약 getBasicMainPlan 종료 ###")
     except NoSuchElementException:
         print("### 기본설계 주계약 getBasicMainPlan 데이터 없음")
         pass
     currentCol = basicMainPlanNo+5 ##현재 엑셀 컬럼 위치
+    print("### 기본설계 주계약 getBasicMainPlan 종료 ###")
     time.sleep(0.5)
 ###############################
 # 연금설계 가져오기
 ###############################
 def getRetirePlan():
     print("### 연금설계 getRetirePlan 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         # 엑셀 항목명 셋팅
@@ -267,9 +272,20 @@ def getRetirePlan():
 ###############################
 def getAddPay():
     print("### 추가설계_추가납입 getAddPay 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         currentColTemp = currentCol
+
+        try:
+            # 팝업창 처리
+            WebDriverWait(browser, 3).until(EC.alert_is_present())
+            alert = browser.switch_to.alert
+            alert.accept() 
+        # 팝업창이 없으면
+        except:
+            pass
+        
         k=0
         # 엑셀 항목명 셋팅
         for row in range(0,5):
@@ -306,9 +322,20 @@ def getAddPay():
 ###############################
 def getDraw():
     print("### 추가설계_인출 getDraw 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         currentColTemp = currentCol
+
+        try:
+            # 팝업창 처리
+            WebDriverWait(browser, 3).until(EC.alert_is_present())
+            alert = browser.switch_to.alert
+            alert.accept() 
+        # 팝업창이 없으면
+        except:
+            pass
+
         k=0
         # 인출
         for row in range(0,5):
@@ -342,10 +369,11 @@ def getDraw():
     print("### 추가설계_인출 getDraw 종료 ###")
     time.sleep(0.5)
 ###############################
-# 스마트전환형 가져오기(추가납입개발보류)
+# 스마트전환형 가져오기
 ###############################
 def getSmartChng():
     print("### 스마트전환형 getSmartChng 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         try:
@@ -365,7 +393,8 @@ def getSmartChng():
         ws.cell(row=2,column=currentCol+4).value = '납입기간'
         # 스마트전환형탭
         elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab05"]/div[1]/a') #스마트전환형탭
-        elem.click()
+        if '스마트전환형' == elem.text: 
+            elem.click()
         # 데이터 스크래핑
         elem = browser.find_element(By.XPATH ,'//*[@id="sbxConv8GurtConv_label"]') #스마트전환 대상자
         ws.cell(row=i,column=currentCol+1).value = elem.text.replace("-선택-",'')
@@ -388,6 +417,7 @@ def getSmartChng():
 ###############################
 def getSmartAddPay():
     print("### 스마트전환형_추가납입 getSmartAddPay 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         currentColTemp = currentCol
@@ -404,7 +434,8 @@ def getSmartAddPay():
 
         # 스마트전환형탭
         elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab05"]/div[1]/a') #스마트전환형탭
-        elem.click()
+        if '스마트전환형' == elem.text: 
+            elem.click()
         currentCol = currentColTemp
         k=0
         for row in range(0,5):
@@ -427,6 +458,7 @@ def getSmartAddPay():
 ###############################
 def getPreRetireAmt():
     print("### 연금선지급 getPreRetireAmt 시작 ###")
+    browser.implicitly_wait(0.5)
     try:
         global currentCol
         # 엑셀 항목명 셋팅
@@ -453,9 +485,116 @@ def getPreRetireAmt():
     print("### 연금선지급 getPreRetireAmt 종료 ###")
     time.sleep(0.5)
 ###############################
+# 보장전환형_대상 가져오기
+###############################
+def getGuRtChngObjt():
+    print("### 보장전환형_대상 getGuRtChng 시작 ###")
+    browser.implicitly_wait(0.5)
+    try:
+        global currentCol
+        # 엑셀 항목명 셋팅
+        ws.cell(row=1,column=currentCol+1).value = '보장전환형_대상'
+        ws.cell(row=2,column=currentCol+1).value = '보장전환대상자'
+        ws.cell(row=2,column=currentCol+2).value = '보장전환시점'
+        ws.cell(row=2,column=currentCol+3).value = '보험기간'
+        ws.cell(row=2,column=currentCol+4).value = '납입기간'
+        # 보장전환형탭
+        elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab05"]/div[1]/a')
+        if '보장전환형' == elem.text: 
+            elem.click()
+        # 데이터 스크래핑
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxConv8GurtConv_label"]') #보험전환대상자
+        ws.cell(row=i,column=currentCol+1).value = elem.text.replace("-선택-",'')
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxConv1GurtConv_label"]') #보장전환시점
+        ws.cell(row=i,column=currentCol+2).value = elem.text.replace("-선택-",'')
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxConv4GurtConv_label"]') #보험기간
+        ws.cell(row=i,column=currentCol+3).value = elem.text.replace("-선택-",'')
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxConv5GurtConv_label"]') #납입기간
+        ws.cell(row=i,column=currentCol+4).value = elem.text.replace("-선택-",'')
+    except Exception as e:
+        print("### 보장전환형_대상 getGuRtChng 예외발생: " + str(e))
+        pass
+
+    currentCol = currentCol + 4 #현재 엑셀 컬럼 위치
+    wb.save("FPworld_testCase.xlsx")
+    print("### 보장전환형_대상 getGuRtChng 종료 ###")
+    time.sleep(0.5)
+###############################
+# 보장전환형_연금전환설계 가져오기
+###############################
+def getGuRtRetireChng():
+    print("### 보장전환형_연금전환설계 getGuRtRetireChng 시작 ###")
+    browser.implicitly_wait(0.5)
+    try:
+        global currentCol
+        # 엑셀 항목명 셋팅
+        ws.cell(row=1,column=currentCol+1).value = '보장전환형_연금전환설계'
+        ws.cell(row=2,column=currentCol+1).value = '연금개시나이'
+        ws.cell(row=2,column=currentCol+2).value = '예시나이간격'
+        # 보장전환형탭
+        elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab05"]/div[1]/a')
+        if '보장전환형' == elem.text: 
+            elem.click()
+        # 데이터 스크래핑
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxGurtConvAnntStrtAge_label"]') #연금개시나이
+        ws.cell(row=i,column=currentCol+1).value = elem.text.replace("-선택-",'')
+        elem = browser.find_element(By.XPATH ,'//*[@id="sbxGurtConvAnntAgeTerm_label"]') #예시나이간격
+        ws.cell(row=i,column=currentCol+2).value = elem.text.replace("-선택-",'') 
+    except Exception as e:
+        print("### 보장전환형_연금전환설계 getGuRtRetireChng 예외발생: " + str(e))
+        pass
+
+    # 현재 엑셀 컬럼 위치
+    currentCol = currentCol+2
+    wb.save("FPworld_testCase.xlsx")
+    print("### 보장전환형_연금전환설계 getGuRtRetireChng 종료 ###")
+    time.sleep(0.5)
+###############################
+# 보장전환형_추가납입 가져오기
+###############################
+def getGuRtAddPay():
+    print("### 보장전환형_추가납입 getGuRtAddPay 시작 ###")
+    browser.implicitly_wait(0.5)
+    try:
+        global currentCol
+        currentColTemp = currentCol
+        k=0
+        # 엑셀 항목명 셋팅
+        for row in range(0,5):
+            ws.cell(row=1,column=currentCol+1+k).value = '보장전환형_추가납입'
+            ws.cell(row=2,column=currentCol+1+k).value = '추가납입시점'
+            ws.cell(row=2,column=currentCol+2+k).value = '추가납입기간'
+            ws.cell(row=2,column=currentCol+3+k).value = '추가납입금액_주기'
+            ws.cell(row=2,column=currentCol+4+k).value = '추가납입금액'
+            currentCol = currentCol+4+k
+            currentColFinal = currentCol # 엑셀 데이터 마지막 위치
+
+        # 보장전환형탭
+        elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab05"]/div[1]/a') 
+        if '보장전환형' == elem.text: 
+            elem.click()
+        currentCol = currentColTemp
+        k=0
+        for row in range(0,5):
+            # 추가납입 col 데이터
+            for col in ['0','2','4','5']: 
+                # 데이터 스크래핑
+                elem = browser.find_element(By.XPATH ,"//*[@id='grdGurtConvAddPay_cell_" + str(row) + "_" + str(col) + "']/nobr") 
+                ws.cell(row=i,column=currentCol+1+k).value = elem.text.replace("선택",'')
+                k = k +1
+    except Exception as e:
+        print("### 보장전환형_추가납입 getGuRtAddPay 예외발생: " + str(e))
+        pass
+
+    currentCol = currentColFinal    
+    wb.save("FPworld_testCase.xlsx")
+    print("### 보장전환형_추가납입 getGuRtAddPay 종료 ###")
+    time.sleep(0.5)
+###############################
 # 기본설계_부가특약 가져오기
 ###############################
 def getBasicAddPlan():
+    browser.implicitly_wait(0.5)
     try:
         print("### 부가특약 getBasicAddPlan 시작 ### ")
         global currentCol
@@ -467,8 +606,8 @@ def getBasicAddPlan():
         for row in range(0,9):
             for col in range(0,5):
                 elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_" + str(row) + "_" + str(4) + "']/nobr") #가입금액
-                # 부가특약 가입금액이 0보다 크면 데이터 가져오기
-                if int(elem.text) > 0: 
+                # 부가특약 가입금액이 0이 아니면
+                if str(elem.text) != str(0): 
                     # 항목명 넣기
                     if col == 0:
                         ws.cell(row=1,column=currentCol+1+k).value = '부가특약'
@@ -483,7 +622,7 @@ def getBasicAddPlan():
                         ws.cell(row=2,column=currentCol+1+k).value = '가입금액' 
                     #부가특약 정보 가져오기
                     elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_" + str(row) + "_" + str(col) + "']/nobr") 
-                    ws.cell(row=i,column=currentCol+1+k).value = elem.text
+                    ws.cell(row=i,column=currentCol+1+k).value = str(elem.text)
                     k = k +1
                     wb.save("FPworld_testCase.xlsx")
         #10번째 라인부터 동적스크롤 처리
@@ -506,12 +645,13 @@ def getBasicAddPlan():
             if current9line == next9line: #현재 특약명과 다음 특약명이 일치하면 종료
                 break
             else: # 현재 특약명과 다음 특약명이 불일치하면 엑셀에 저장
-                # 부가특약 가입금액이 0보다 크면
+                # 부가특약 가입금액이 0이 아니면
                 elem = browser.find_element(By.XPATH ,'//*[@id="grdGoodMenu_cell_8_4"]/nobr')
-                if int(elem.text) > 0:
+                if str(elem.text) != str(0):
                     for col in range(0,5):
                         # 항목명 넣기
                         if col == 0:
+                            ws.cell(row=1,column=currentCol+1+k).value = '부가특약'
                             ws.cell(row=2,column=currentCol+1+k).value = '구분'
                         elif col == 1:
                             ws.cell(row=2,column=currentCol+1+k).value = '특약명칭'
@@ -523,12 +663,13 @@ def getBasicAddPlan():
                             ws.cell(row=2,column=currentCol+1+k).value = '가입금액'    
                         #부가특약 정보 가져오기
                         elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_8_" + str(col) + "']/nobr")
-                        ws.cell(row=i,column=currentCol+1+k).value = elem.text
+                        ws.cell(row=i,column=currentCol+1+k).value = str(elem.text)
                         k = k +1
+                        wb.save("FPworld_testCase.xlsx")
     except Exception as e:
         print("### 부가특약 getBasicAddPlan 예외발생: " + str(e))
         pass
-
+    wb.save("FPworld_testCase.xlsx")
     print("### 부가특약 getBasicAddPlan 종료 ### ")
     time.sleep(0.5)
 ###############################
@@ -556,18 +697,25 @@ if __name__ == "__main__":
     ###############################
     for i in range(3,ws.max_row+1):
         currentCol = 0            # 현재 엑셀 컬럼 위치
-        print(currentCol)
         goodName = ws.cell(row=i,column=2).value #엑셀 상품명
         ws.cell(row=i,column=1).value = 'case' + str(i-2)
 
         goodFind() # 엑셀 상품명과 일치하는 메뉴명 찾기
         pyautogui.press('enter') # 팝업창 처리
         time.sleep(0.1)
+        
+        ###############################
+        # 상품 공통
+        ###############################
         history()          # 설계 이력조회
         mainSelect()       # 메인 조회
         getInsrKind()      # 보험종류
         getCtorTable()     # 계약자구분
         getBasicMainPlan() # 기본설계_주계약
+
+        ###############################
+        # 상품 옵션
+        ###############################
         getRetirePlan()    # 연금설계
         print("1. 연금설계 종료: " + str(currentCol))
         getAddPay()        # 추가설계_추가납입
@@ -576,11 +724,18 @@ if __name__ == "__main__":
         print("3. 추가설계_인출 종료: " + str(currentCol))
         getSmartChng()     # 스마트전환형
         print("4. 스마트전환형 종료: " + str(currentCol))
-        getPreRetireAmt()  # 연금선지급
-        print("5. 스마트전환형_추가납입 종료: " + str(currentCol))
         getSmartAddPay()   # 스마트전환형_추가납입
+        print("5. 스마트전환형_추가납입 종료: " + str(currentCol))
+        getPreRetireAmt()  # 연금선지급
         print("6. 연금선지급 종료: " + str(currentCol))
-        getBasicAddPlan()  # 기본설계_부가특약
+        getGuRtChngObjt()      # 보장전환형_대상
+        print("7. 보장전환형_대상 종료: " + str(currentCol))
+        getGuRtRetireChng()      # 보장전환형_연금전환설계
+        print("8. 보장전환형_연금전환설계 종료: " + str(currentCol))
+        getGuRtAddPay()      # 보장전환형_추가납입
+        print("9. 보장전환형_추가납입 종료: " + str(currentCol))
+        getBasicAddPlan()  # 기본설계_부가특약(최종)
             
     wb.save("FPworld_testCase.xlsx")
     wb.close()
+    browser.quit()
