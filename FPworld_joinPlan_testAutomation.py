@@ -641,10 +641,17 @@ def setBasicAddPlan():
     try:
         elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab01"]/div[1]/a') #기본설계탭
         elem.click()
+
+        # 부가특약 첫그리드 마지막 라인 찾기
+        elems = browser.find_elements(By.ID, '_headerRowNumber')
+        gridRowCount = 0
+        for elem in elems:
+            if elem.text:
+                gridRowCount = int(elem.text)
     
-        # 부가특약 1~9라인 처리
+        # 부가특약 첫그리드 처리
         temp =0
-        for row in range(0,9):
+        for row in range(0,gridRowCount-1):
             browser.implicitly_wait(0.5)
             elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_" + str(row) + "_1']/nobr") 
             #특약명칭
@@ -664,12 +671,12 @@ def setBasicAddPlan():
                     pass
                 temp = temp + 5
         
-        #10번째 라인부터 동적스크롤 처리
+        #마지막 라인부터 동적스크롤 처리
         while True:
-            # 현재 9번째 라인 특약명칭
-            current_elem = browser.find_element(By.XPATH , '//*[@id="grdGoodMenu_cell_8_1"]/nobr') 
+            # 현재 마지막 라인 특약명칭
+            current_elem = browser.find_element(By.XPATH , "//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_1']/nobr") 
             current_elem.click()
-            current9line = str(current_elem.text)
+            currentLastline = str(current_elem.text)
 
             # 작은 스크롤 아래로 한칸 이동
             current_elem.click()
@@ -677,32 +684,32 @@ def setBasicAddPlan():
             pyautogui.press('down') 
             time.sleep(0.1)
 
-            # 동적스크롤 작동 후 9번째 라인 특약명칭
-            next_elem = browser.find_element(By.XPATH , '//*[@id="grdGoodMenu_cell_8_1"]/nobr') 
-            next9line = str(next_elem.text)
+            # 아래로 한칸 이동 후 마지막 라인 특약명칭
+            next_elem = browser.find_element(By.XPATH , "//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_1']/nobr") 
+            nextLastline = str(next_elem.text)
 
-            if str(current9line) == str(next9line): #현재 특약명과 다음 특약명이 일치하면 종료
+            if str(currentLastline) == str(nextLastline): #현재 특약명과 다음 특약명이 일치하면 종료
                 break
             else:
-                if str(next9line) == str(ws.cell(row=i,column=setBasicAddPlanNo+temp+1).value):
+                if str(nextLastline) == str(ws.cell(row=i,column=setBasicAddPlanNo+temp+1).value):
                     time.sleep(0.1)
                     #보험기간 
                     try:
-                        selectBoxFind("//*[@id='grdGoodMenu_cell_8_2']/nobr",'G_grdGoodMenu___selectbox_goodIntr_itemTable_',setBasicAddPlanNo+temp+2)
+                        selectBoxFind("//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_2']/nobr",'G_grdGoodMenu___selectbox_goodIntr_itemTable_',setBasicAddPlanNo+temp+2)
                     except Exception as e:
                         print("### 기본설계_부가특약 setBasicAddPlan 동적스크롤 보험기간 예외발생: " + str(e))
                         pass
                     time.sleep(0.1)
                     #납입기간
                     try:
-                        selectBoxFind("//*[@id='grdGoodMenu_cell_8_3']/nobr",'G_grdGoodMenu___selectbox_goodPytr_itemTable_',setBasicAddPlanNo+temp+3)
+                        selectBoxFind("//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_3']/nobr",'G_grdGoodMenu___selectbox_goodPytr_itemTable_',setBasicAddPlanNo+temp+3)
                     except Exception as e:
                         print("### 기본설계_부가특약 setBasicAddPlan 동적스크롤 납입기간 예외발생: " + str(e))
                         pass
                     time.sleep(0.1)
                     #가입금액
                     try:
-                        elem = browser.find_element(By.XPATH, "//*[@id='grdGoodMenu_cell_8_4']/nobr")
+                        elem = browser.find_element(By.XPATH, "//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_4']/nobr")
                         elem.click()
                         elem = browser.find_element(By.XPATH, "//*[@id='G_grdGoodMenu__goodPrem']")
                         elem.send_keys(str(ws.cell(row=i,column=setBasicAddPlanNo+temp+4).value))

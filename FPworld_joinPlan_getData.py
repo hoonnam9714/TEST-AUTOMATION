@@ -1,14 +1,13 @@
 import pyautogui
 import pyperclip
 import time
-import datetime
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from openpyxl import load_workbook
-from datetime import datetime, timedelta      
+from datetime import datetime,timedelta      
 from bs4 import BeautifulSoup  
 from selenium.common.exceptions import NoSuchElementException
 
@@ -601,9 +600,16 @@ def getBasicAddPlan():
         elem = browser.find_element(By.XPATH, '//*[@id="subTac_tab_tab01"]/div[1]/a') #기본설계탭
         elem.click()
 
-        # 부가특약 1~9라인 처리
+        # 부가특약 첫그리드 마지막 라인 찾기
+        elems = browser.find_elements(By.ID, '_headerRowNumber')
+        gridRowCount = 0
+        for elem in elems:
+            if elem.text:
+                gridRowCount = int(elem.text)
+
+        # 부가특약 첫그리드 처리
         k=0
-        for row in range(0,9):
+        for row in range(0,gridRowCount-1):
             for col in range(0,5):
                 elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_" + str(row) + "_" + str(4) + "']/nobr") #가입금액
                 # 부가특약 가입금액이 0이 아니면
@@ -625,12 +631,12 @@ def getBasicAddPlan():
                     ws.cell(row=i,column=currentCol+1+k).value = str(elem.text)
                     k = k +1
                     wb.save("FPworld_testCase.xlsx")
-        #10번째 라인부터 동적스크롤 처리
+        #동적스크롤 처리
         while True:
-            # 현재 9번째 라인 특약명칭
-            current_elem = browser.find_element(By.XPATH , '//*[@id="grdGoodMenu_cell_8_1"]/nobr') 
+            # 현재 마지막라인 특약명칭
+            current_elem = browser.find_element(By.XPATH , "//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_1']/nobr") 
             current_elem.click()
-            current9line = str(current_elem.text)
+            currentLastline = str(current_elem.text)
 
             # 작은 스크롤 아래로 한칸 이동
             current_elem.click()
@@ -638,15 +644,16 @@ def getBasicAddPlan():
             pyautogui.press('down') 
             time.sleep(0.05)
 
-            # 동적스크롤 작동 후 9번째 라인 특약명칭
-            next_elem = browser.find_element(By.XPATH , '//*[@id="grdGoodMenu_cell_8_1"]/nobr') 
-            next9line = str(next_elem.text)
+            # 아래로 한칸 이동 후 마지막 라인 특약명칭
+            next_elem = browser.find_element(By.XPATH , "//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_1']/nobr") 
+            nextLastline = str(next_elem.text)
 
-            if current9line == next9line: #현재 특약명과 다음 특약명이 일치하면 종료
+
+            if currentLastline == nextLastline: #현재 특약명과 다음 특약명이 일치하면 종료
                 break
             else: # 현재 특약명과 다음 특약명이 불일치하면 엑셀에 저장
                 # 부가특약 가입금액이 0이 아니면
-                elem = browser.find_element(By.XPATH ,'//*[@id="grdGoodMenu_cell_8_4"]/nobr')
+                elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_4']/nobr")
                 if str(elem.text) != str(0):
                     for col in range(0,5):
                         # 항목명 넣기
@@ -662,7 +669,7 @@ def getBasicAddPlan():
                         elif col == 4:
                             ws.cell(row=2,column=currentCol+1+k).value = '가입금액'    
                         #부가특약 정보 가져오기
-                        elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_8_" + str(col) + "']/nobr")
+                        elem = browser.find_element(By.XPATH ,"//*[@id='grdGoodMenu_cell_"+str(gridRowCount-2)+"_" + str(col) + "']/nobr")
                         ws.cell(row=i,column=currentCol+1+k).value = str(elem.text)
                         k = k +1
                         wb.save("FPworld_testCase.xlsx")
@@ -738,4 +745,4 @@ if __name__ == "__main__":
             
     wb.save("FPworld_testCase.xlsx")
     wb.close()
-    browser.quit()
+    pyautogui.alert('가입설계 테스트 케이스 만들기 자동화 종료')
